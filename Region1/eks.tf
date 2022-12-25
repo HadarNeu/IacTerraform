@@ -1,5 +1,5 @@
-resource "aws_iam_role" "eks-role" {
-  name = "eks-role"
+resource "aws_iam_role" "eksrole" {
+  name = "eks-role-for-terraform"
 
   assume_role_policy = <<POLICY
 {
@@ -19,23 +19,24 @@ POLICY
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks-role.name
+  role       = aws_iam_role.eksrole.name
 }
 
 resource "aws_eks_cluster" "eks-cluster" {
   name     = "eks-cluster"
-  role_arn = aws_iam_role.eks-role.arn
+  role_arn = aws_iam_role.eksrole.arn
 
   vpc_config {
     subnet_ids = [
       aws_subnet.private[0].id,
+      aws_subnet.private[1].id
     ]
   }
 
   depends_on = [aws_iam_role_policy_attachment.AmazonEKSClusterPolicy]
 }
 resource "aws_iam_role" "nodes" {
-  name = "eks-node-group-nodes"
+  name = "nodes"
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -73,7 +74,8 @@ resource "aws_eks_node_group" "private-nodes" {
   node_role_arn   = aws_iam_role.nodes.arn
 
   subnet_ids = [
-    aws_subnet.private[1].id,
+    aws_subnet.private[0].id,
+    aws_subnet.private[1].id
   ]
 
   capacity_type  = "SPOT"
