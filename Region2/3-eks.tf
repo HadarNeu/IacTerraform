@@ -110,6 +110,10 @@ resource "aws_security_group" "cluster-sg" {
   }
 }
 
+data "aws_security_group" "cluster-sg" {
+  name        = "terraform-eks-cluster-sg"
+  vpc_id      = aws_vpc.vpc.id
+}
 // DEPLOYMENT of eks NODE GROUP
 resource "aws_eks_node_group" "private-nodes" {
   cluster_name    = aws_eks_cluster.eks-cluster.name
@@ -121,7 +125,7 @@ resource "aws_eks_node_group" "private-nodes" {
   }
 
   subnet_ids         = [aws_subnet.private[0].id, aws_subnet.private[1].id]
- 
+  
 
   capacity_type  = "SPOT"
   instance_types = ["t2.micro"]
@@ -142,6 +146,7 @@ resource "aws_eks_node_group" "private-nodes" {
 
 
   depends_on = [
+    aws_security_group.cluster-sg,
     aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly,
