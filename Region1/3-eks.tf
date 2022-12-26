@@ -85,7 +85,7 @@ resource "aws_security_group" "cluster-sg" {
      description = "SSH from local host"
      from_port   = 22
      to_port     = 22
-     protocol    = "ssh"
+     protocol    = "tcp"
      cidr_blocks = [var.local_host_ip]
    }
     // inbound traffic tcp connection to cluster API only with the operator admin.
