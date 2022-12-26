@@ -116,10 +116,11 @@ resource "aws_eks_node_group" "private-nodes" {
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.nodes.arn
 
-  vpc_config {
-    security_group_ids = [aws_security_group.cluster-sg.id]
-    subnet_ids         = [aws_subnet.private[0].id, aws_subnet.private[1].id]
+  remote_access {
+    source_security_group_ids = [data.aws_security_group.cluster-sg.id]
   }
+
+  subnet_ids         = [aws_subnet.private[0].id, aws_subnet.private[1].id]
 
   capacity_type  = "SPOT"
   instance_types = ["t2.micro"]
