@@ -1,6 +1,6 @@
 # IacTerraform
 Multi AZ and multi region deployment of EKS cluster using Terraform. 
-Automatic deployment of busybox image using Kubernetes Terraform Module.
+Automatic deployment of a Pyhton Whats My IP app image I created, using Kubernetes Terraform Module.
 ![alt text](./Images/infrastructure.png?raw=true "output")
 
 ## How to deploy:
