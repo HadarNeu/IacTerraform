@@ -111,7 +111,7 @@ resource "aws_security_group" "cluster-sg" {
 }
 
 data "aws_security_group" "cluster-sg" {
-  name        = "terraform-eks-cluster-sg"
+  name = aws_security_group.cluster-sg.name
   vpc_id      = aws_vpc.vpc.id
 }
 // DEPLOYMENT of eks NODE GROUP
@@ -120,9 +120,9 @@ resource "aws_eks_node_group" "private-nodes" {
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.nodes.arn
 
-  remote_access {
-    source_security_group_ids = [data.aws_security_group.cluster-sg.id]
-  }
+  #remote_access {
+  #  source_security_group_ids = [data.aws_security_group.cluster-sg.id]
+  #}
 
   subnet_ids         = [aws_subnet.private[0].id, aws_subnet.private[1].id]
   
